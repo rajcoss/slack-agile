@@ -84,11 +84,11 @@ class Command
   end
 
   def process_check
-    Round.latest_open_for_channel(channel_name) ||
-      CommandError.new('Not currently playing', ephemeral: false)
+    Round.latest_open_for_channel(channel_name) || not_playing
   end
 
   def process_estimate
+    return not_playing unless playing?
     Estimate.find_or_initialize_by(
       round: Round.latest_open_for_channel(channel_name),
       user: user_name,
@@ -100,19 +100,30 @@ class Command
   end
 
   def process_reveal
+    return not_playing unless playing?
     Round
       .latest_open_for_channel(channel_name)
       .tap { |round| round.update(revealed: true) }
   end
 
   def process_decide
+    return not_playing unless playing?
     Round
       .latest_open_for_channel(channel_name)
       .tap { |round| round.update(value: argument) }
   end
 
   def process_quit
+    return not_playing unless playing?
     Round.latest_open_for_channel(channel_name).close!
+  end
+
+  def playing?
+    Round.latest_open_for_channel(channel_name).present?
+  end
+
+  def not_playing
+    CommandError.new('Not currently playing', ephemeral: false)
   end
 
   def verb
