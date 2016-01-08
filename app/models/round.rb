@@ -9,7 +9,7 @@ class Round < ActiveRecord::Base
 
   validates :issue, :channel, presence: true
   validates :issue, format: {
-    with: %r{[^/]+/[0-9]+},
+    with: Issue::ISSUE_PATTERN,
     message: 'must be formatted like "repo_name/123"',
   }
   validates :value,
@@ -67,11 +67,15 @@ class Round < ActiveRecord::Base
     elsif revealed
       "Estimates for #{issue}: #{estimate_text}"
     else
-      "Planning poker for #{issue}."
+      "Planning poker for #{issue}.\n---\n#{to_issue.to_text}"
     end
   end
 
   def estimate_text
     estimates.order('value ASC').map(&:to_text).to_sentence
+  end
+
+  def to_issue
+    Issue.from_name(issue)
   end
 end
