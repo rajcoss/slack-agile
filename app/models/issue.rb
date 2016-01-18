@@ -34,6 +34,21 @@ class Issue
     @_to_gh ||= Github.issues.get @org, @repo, @number
   end
 
+  def label!(string)
+    Github.issues.labels.add @org, @repo, @number, string
+  end
+
+  def unlabel!(&block)
+    fail('Block is required for unlabel') unless block_given?
+    to_gh.labels.map(&:name)
+    .select do |label_name|
+      yield label_name
+    end
+    .each do |label_name|
+      Github.issues.labels.remove @org, @repo, @number, label_name: label_name
+    end
+  end
+
   delegate :title, to: :to_gh
 
   def body

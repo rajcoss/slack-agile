@@ -31,6 +31,15 @@ class Round < ActiveRecord::Base
     open_for_channel(channel).update_all(closed: true)
   end
 
+  def decide(value)
+    update(value: value.to_i)
+
+    to_issue.unlabel! do |label_name|
+      /\Apoints:/.match(label_name).present?
+    end
+    to_issue.label!("points:#{value.to_i}")
+  end
+
   def close!
     update!(closed: true)
     self

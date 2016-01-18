@@ -110,7 +110,7 @@ class Command
     return not_playing unless playing?
     Round
       .latest_open_for_channel(channel_name)
-      .tap { |round| round.update(value: argument) }
+      .tap { |round| round.decide(argument) }
   end
 
   def process_quit
