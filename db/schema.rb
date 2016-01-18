@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160104205325) do
+ActiveRecord::Schema.define(version: 20160118213339) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "estimates", force: :cascade do |t|
     t.string   "user"
@@ -26,9 +29,10 @@ ActiveRecord::Schema.define(version: 20160104205325) do
     t.integer  "value"
     t.string   "issue"
     t.string   "channel"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.boolean  "closed"
+    t.string   "response_url"
   end
 
 end

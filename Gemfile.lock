@@ -150,6 +150,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   dotenv
+  faraday
   github_api
   jbuilder (~> 2.0)
   pg

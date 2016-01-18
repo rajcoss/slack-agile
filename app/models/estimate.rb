@@ -12,6 +12,10 @@ class Estimate < ActiveRecord::Base
     message: 'points must be 1, 2, 3, 5, 8, or 13',
   }
 
+  after_create do
+    round.broadcast_who_has_estimated
+  end
+
   def to_text
     "#{user}=#{value}"
   end

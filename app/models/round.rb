@@ -87,4 +87,19 @@ class Round < ActiveRecord::Base
   def to_issue
     Issue.from_name(issue)
   end
+
+  def broadcast_who_has_estimated
+    msg = "#{estimates.map(&:user).to_sentence} #{estimates.length > 1 ? 'have' : 'has'} estimated."
+    respond_publicly_in_slack(msg)
+  end
+
+  def respond_publicly_in_slack(message)
+    Faraday.new.post Round.last.response_url do |req|
+      req.headers['Content-Type'] = 'application/json'
+      req.body = JSON.dump(
+        response_type: 'in_channel',
+        text: message,
+      )
+    end
+  end
 end

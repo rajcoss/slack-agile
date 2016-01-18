@@ -80,7 +80,11 @@ class Command
 
   def process_start
     Round.close_existing_for_channel(channel_name)
-    Round.new(issue: argument, channel: channel_name).tap(&:save)
+    Round.new(
+      issue: argument,
+      channel: channel_name,
+      response_url: response_url,
+    ).tap(&:save)
   end
 
   def process_check
