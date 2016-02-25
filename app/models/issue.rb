@@ -77,7 +77,7 @@ class Issue
   end
 
   def when_labeled(x)
-    return unless if events.labeled(x).any?
+    return unless events.labeled(x).any?
     Time.zone.parse(events.labeled(x).first['created_at'])
   end
 
