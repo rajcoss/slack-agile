@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
   resource :poker
+
+  root to: 'checks#index'
+
+  resources :checks
+
+  resource :github_webhooks, only: :create, defaults: { formats: :json }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

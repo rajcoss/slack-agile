@@ -1,5 +1,10 @@
+# Represents one GitHub repo
 class Repo
   attr_accessor :org, :repo
+
+  def self.from_gh(gh)
+    new(org: gh['owner']['login'], repo: gh.name)
+  end
 
   def initialize(org:, repo:)
     @org = org
@@ -10,18 +15,14 @@ class Repo
     issues_and_pulls.true_issues
   end
 
-  def pulls
-    issues_and_pulls.pulls
-  end
+  delegate :pulls, to: :issues_and_pulls
 
   def issues_and_pulls
     @_issues_and_pulls ||=
       IssueCollection.new(
-        IssuePaginator.new(org: @org, repo: @repo).to_a.flat_map do |gh_objs|
-          gh_objs.map do |gh|
-            Issue.from_gh(org: @org, repo: @repo, gh: gh)
-          end
-        end
+        IssuePaginator.new(org: @org, repo: @repo).to_a.flat_map do |gh|
+          Issue.from_gh(org: @org, repo: @repo, gh: gh)
+        end,
       )
   end
 

@@ -58,6 +58,8 @@ GEM
       hashie (>= 3.4)
       multi_json (>= 1.7.5, < 2.0)
       oauth2
+    github_webhook (0.3.2)
+      activesupport (~> 4)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.3)
@@ -152,6 +154,7 @@ DEPENDENCIES
   dotenv
   faraday
   github_api
+  github_webhook
   jbuilder (~> 2.0)
   pg
   rails (= 4.2.4)

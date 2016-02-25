@@ -1,8 +1,9 @@
 module Checkers
-  class OneInProgress
+  # Warn when a user has multiple issues in progress
+  class OneInProgress < Base
     def run(repo)
       assignee_counts(repo)
-        .select { |assignee, count| count > 1 }
+        .select { |_assignee, count| count > 1 }
         .map do |assignee, count|
           Violation.new(
             repo: repo,

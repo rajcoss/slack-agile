@@ -1,5 +1,6 @@
 module Checkers
-  class RightTags
+  # Check that the repo has the right tags in place
+  class RightTags < Base
     REQUIRED_TAGS = [
       'sprint backlog',
       'bug',

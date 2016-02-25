@@ -76,6 +76,23 @@ class Issue
     !pull?
   end
 
+  def when_labeled(x)
+    return unless if events.labeled(x).any?
+    Time.zone.parse(events.labeled(x).first['created_at'])
+  end
+
+  def events
+    @_events ||=
+      EventCollection.new(
+        EventPaginator.new(
+          org: @org,
+          repo: @repo,
+          issue_number: @number,
+        ),
+      )
+      .reverse_chronological
+  end
+
   def to_text
     "title: #{title}\n---\n#{body}"
   end
