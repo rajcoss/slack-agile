@@ -1,0 +1,18 @@
+<ul>
+<% @checks.each do |repo, violations| %>
+  <li>
+    <%= repo %>
+    <ul>
+      <% if violations.any? %>
+        <% violations.each do |violation| %>
+          <li>
+            <%= violation.message %>
+          </li>
+        <% end %>
+      <% else %>
+        So fresh and so clean clean.
+      <% end %>
+    </ul>
+  </li>
+<% end %>
+</ul>

@@ -24,6 +24,14 @@ class Issue
     }
   end
 
+  def self.from_gh(org:, repo:, gh:)
+    new(org: org, repo: repo, number: gh['number']).tap do |issue|
+      issue.instance_variable_set(:@_to_gh, gh)
+    end
+  end
+
+  attr_accessor :org, :repo, :number
+
   def initialize(org:, repo:, number:)
     @org = org
     @repo = repo
@@ -34,8 +42,13 @@ class Issue
     @_to_gh ||= Github.issues.get @org, @repo, @number
   end
 
+  def labels
+    @_labels ||= to_gh['labels'].map { |label| label.name.downcase }
+  end
+
   def label!(string)
     Github.issues.labels.add @org, @repo, @number, string
+    labels.append(string).uniq!
   end
 
   def unlabel!(&block)
@@ -55,7 +68,37 @@ class Issue
     to_gh.body.body
   end
 
+  def pull?
+    to_gh['pull_request'].present?
+  end
+
+  def true_issue?
+    !pull?
+  end
+
+  def when_labeled(x)
+    return unless if events.labeled(x).any?
+    Time.zone.parse(events.labeled(x).first['created_at'])
+  end
+
+  def events
+    @_events ||=
+      EventCollection.new(
+        EventPaginator.new(
+          org: @org,
+          repo: @repo,
+          issue_number: @number,
+        ),
+      )
+      .reverse_chronological
+  end
+
   def to_text
     "title: #{title}\n---\n#{body}"
+  end
+
+  def method_missing(name, *args, &block)
+    return to_gh[name] if args.length == 0 && !block_given? && to_gh.key?(name)
+    super
   end
 end

@@ -37,6 +37,7 @@ gem 'faraday'
 gem 'dotenv'
 
 gem 'github_api'
+gem 'github_webhook'
 
 group :production do
   gem 'rails_12factor'
