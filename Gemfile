@@ -39,6 +39,8 @@ gem 'dotenv'
 gem 'github_api'
 gem 'github_webhook'
 
+gem 'lograge'
+
 group :production do
   gem 'rails_12factor'
 end
